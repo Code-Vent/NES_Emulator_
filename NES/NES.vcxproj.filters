@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{1a059d90-5fbf-4932-aab3-e57f952d52d6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bus.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\peripheral.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memory.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu6502.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ppu2C02.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\apu2A03.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nes.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\peripheral.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bus.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu6502.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ppu2C02.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\apu2A03.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nes.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
