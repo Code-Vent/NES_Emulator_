@@ -12,7 +12,7 @@ void setup(struct Nes* nes) {
     nes->graphics_bus = allocBus();
     allocVRam(nes->graphics_bus, 0x2000, 0x800);
 
-    allocPictureProcessingUnit(&nes->ppu, nes->main_bus, 0x2000, 0x2007);
+    allocPictureProcessingUnit(&nes->ppu, nes->main_bus, 0x2000, 0x3FFF);
     addGraphicsBusToPPU(&nes->ppu, nes->graphics_bus);
 
     for (uint16_t i = 0; i < 0x800; ++i) {
