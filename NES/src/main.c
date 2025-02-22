@@ -1,9 +1,11 @@
 #include<stdio.h>
 #include"nes.h"
-
-
+#include"raylib/raylib.h"
+#include"raylib/rlgl.h"
+#include"GLFW/glfw3.h"
 
 int main(int argc, char* argv[]) {
+    
     struct Nes nes;
     setup(&nes);
     
@@ -27,11 +29,16 @@ int main(int argc, char* argv[]) {
     }
     
     destroy(&nes);
-    
     /*
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+    
     // 800x450 is 16:9
-    InitWindow(800, 450, "Raylib");
-    SetTargetFPS(60);
+    InitWindow(800, 450, "Raylib Custom GLFW Context");
+    //SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
 

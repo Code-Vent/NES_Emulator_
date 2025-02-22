@@ -124,8 +124,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Dev\Projects\NES\Dependencies\raylib;C:\Dev\Projects\NES\Dependencies\glm;C:\Dev\Projects\NES\Dependencies\freetype;C:\Dev\Projects\NES\Dependencies\freeImage;C:\Dev\Projects\NES\Dependencies\freeglut;C:\Dev\Projects\NES\Dependencies\glew;C:\Dev\Projects\NES\Dependencies\GLFW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>raylib.lib;raylibdll.lib;FreeImage.lib;freetype.lib;glew32.lib;freeglut.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Dev\Projects\NES\Dependencies\raylib;C:\Dev\Projects\NES\Dependencies\GLFW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>raylib.lib;raylibdll.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib;kernel32.lib;winmm.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

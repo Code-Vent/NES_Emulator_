@@ -6,7 +6,7 @@
 #include "cpu6502.h"
 #include "ppu2C02.h"
 #include"apu2A03.h"
-#include"raylib/raylib.h"
+//#include"raylib/raylib.h"
 
 struct Nes {
     CPU6502* cpu;

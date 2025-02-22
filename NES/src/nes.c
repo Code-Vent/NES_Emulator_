@@ -1,5 +1,5 @@
 #include"nes.h"
-
+#include<stdio.h>
 
 void setup(struct Nes* nes) {
     nes->main_bus = allocBus();
