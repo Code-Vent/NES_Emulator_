@@ -197,9 +197,9 @@ void deallocCPU(CPU6502* cpu) {
     free(cpu);
 }
 
-struct Registers getRegisters(CPU6502* cpu) {
-    assert(cpu != NULL);
-    return core;
+void getCPURegisters(struct Registers* r) {
+    assert(r != NULL);
+    *r = core;
 }
 
 bool execute(CPU6502* cpu) {

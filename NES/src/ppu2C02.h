@@ -39,8 +39,8 @@ typedef struct _PPU2C02 PPU2C02;
 
 PPU2C02* allocPPU(struct Bus* main_bus, struct Bus* g_bus, uint16_t start_address, uint16_t end_address);
 void deallocPPU(PPU2C02*);
-struct PPUCTRLBits* getControlSettings();
-struct PPUMASKBits* getRenderingSettings();
+void getPPUControlSettings(struct PPUCTRLBits*);
+void getPPURenderingSettings(struct PPUMASKBits*);
 
 
 

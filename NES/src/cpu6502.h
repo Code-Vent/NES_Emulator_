@@ -24,7 +24,7 @@ struct Registers
 };
 
 CPU6502* allocCPU(struct Bus*, uint16_t stack_base_addr);
-struct Registers getRegisters(CPU6502*);
+void getCPURegisters(struct Registers*);
 void deallocCPU(CPU6502*);
 void hardReset(CPU6502* cpu);
 bool execute(CPU6502* cpu);

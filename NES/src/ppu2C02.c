@@ -82,14 +82,14 @@ void deallocPPU(PPU2C02* ppu)
     free(ppu);
 }
 
-struct PPUCTRLBits* getControlSettings()
+void getPPUControlSettings(struct PPUCTRLBits* bits)
 {
-    return &g_ppu->s_ctrl.bits;
+    *bits = g_ppu->s_ctrl.bits;
 }
 
-struct PPUMASKBits* getRenderingSettings()
+void getPPURenderingSettings(struct PPUMASKBits* bits)
 {
-    return &g_ppu->s_render;
+    *bits = g_ppu->s_render.bits;
 }
 
 
