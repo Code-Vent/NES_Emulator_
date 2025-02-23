@@ -3,17 +3,17 @@
 
 void setup(struct Nes* nes) {
     nes->main_bus = allocBus();
-    allocRam(nes->main_bus, 0, 0x800);
-    allocStack(nes->main_bus, 0x1000, 256);
+    allocStack(nes->main_bus, 0x800, 256);
+    allocRam(nes->main_bus, 0, 0x2000);
     allocCartridge(nes->main_bus, 0x4020, 0xBFE0);
     nes->cpu = allocCPU(nes->main_bus, 0x1000);
     nes->apu = allocAPU(nes->main_bus, 0x4000, 64);
 
     nes->graphics_bus = allocBus();
-    allocVRam(nes->graphics_bus, 0x2000, 0x800);
+    allocVRam(nes->graphics_bus, 0, 0x4000);
 
-    allocPictureProcessingUnit(&nes->ppu, nes->main_bus, 0x2000, 0x3FFF);
-    addGraphicsBusToPPU(&nes->ppu, nes->graphics_bus);
+    nes->ppu = allocPPU(nes->main_bus, nes->graphics_bus, 0x2000, 0x3FFF);
+   
 
     for (uint16_t i = 0; i < 0x800; ++i) {
         uint16_t address = 0x2000 + i;
@@ -26,4 +26,5 @@ void destroy(struct Nes* nes) {
     deallocBus(nes->graphics_bus);
     deallocCPU(nes->cpu);
     deallocAPU(nes->apu);
+    deallocPPU(nes->ppu);
 }

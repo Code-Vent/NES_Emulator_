@@ -9,31 +9,38 @@
 #include<stdio.h>
 
 #define RAM_SIZE 2048
+#define VRAM_SIZE 0x4000
 #define CARTRIDGE_SIZE 0xBFE0
 #define STACK_SIZE 256
 
-struct Memory {
+struct Ram {
     uint16_t start_address;
-    uint8_t data[RAM_SIZE];
-}ram, v_ram;
+    uint8_t data[RAM_SIZE + STACK_SIZE];
+}ram;
+
+struct VRam {
+    uint16_t start_address;
+    uint8_t data[VRAM_SIZE];
+}v_ram;
+
+struct Stack {
+    uint16_t start_address;
+}stack;
 
 struct Cartridge {
     uint16_t start_address;
     uint8_t data[CARTRIDGE_SIZE];
 }cartridge;
 
-struct Stack {
-    uint16_t start_address;
-    uint8_t data[STACK_SIZE];
-}stack;
 
 
 uint8_t readRam(uint16_t address) {
-    return ram.data[address - ram.start_address];
+    return ram.data[(address & 0x7FF) - ram.start_address];
 }
 
 void writeRam(uint16_t address, uint8_t value) {
-    ram.data[address - ram.start_address] = value;
+
+    ram.data[(address & 0x7FF) - ram.start_address] = value;
 }
 
 uint8_t readVRam(uint16_t address) {
@@ -52,11 +59,11 @@ void writeCartridge(uint16_t address, uint8_t value) {
 }
 
 uint8_t readStack(uint16_t address) {
-    return stack.data[address - stack.start_address];
+    return ram.data[address - stack.start_address];
 }
 
 void writeStack(uint16_t address, uint8_t value) {
-    stack.data[address - stack.start_address] = value;
+    ram.data[address - stack.start_address] = value;
 }
 
 void allocRam(struct Bus* bus, uint16_t start_address, uint16_t size) {
@@ -74,7 +81,7 @@ void allocVRam(struct Bus* bus, uint16_t start_address, uint16_t size) {
     p->write = writeVRam;
     v_ram.start_address = start_address;
     srand(time(0));
-    for (uint16_t i = 0; i < RAM_SIZE; ++i) {
+    for (uint16_t i = 0; i < VRAM_SIZE; ++i) {
         writeVRam(start_address + i, rand());
     }
 }
@@ -85,8 +92,6 @@ void allocStack(struct Bus* bus, uint16_t start_address, uint16_t size) {
     p->read = readStack;
     p->write = writeStack;
     stack.start_address = start_address;
-    stack.data[0] = 0xA0;
-    stack.data[0xFF] = 0xFF;
 }
 
 void allocCartridge(struct Bus* bus, uint16_t start_address, uint16_t size) {

@@ -13,7 +13,7 @@ struct Nes {
     APU2A03* apu;
     struct Bus* main_bus;
     struct Bus* graphics_bus;
-    struct PPU2C02 ppu;
+    PPU2C02* ppu;
 };
 
 void setup(struct Nes* nes);
