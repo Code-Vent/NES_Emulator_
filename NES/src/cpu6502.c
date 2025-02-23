@@ -5,9 +5,9 @@
 #include"cpu6502.h"
 #include"peripheral.h"
 
-#define X_REG_ADDR 0x1100
-#define Y_REG_ADDR 0x1101
-#define A_REG_ADDR 0x1102
+#define X_REG_ADDR 0
+#define Y_REG_ADDR 1
+#define A_REG_ADDR 2
 
 #define FLAG_CARRY 0x01
 #define FLAG_ZERO 0x02
@@ -20,18 +20,17 @@
 
 
 static struct Registers core;
-
+uint16_t    core_base;
 struct _CPU6502 {
     struct Bus* bus;
     int16_t     data;
-    uint16_t    stack_base;
     bool        error;
     uint8_t     clock_cycles;
     uint8_t     opcode;
 };
 
 uint8_t readCoreRegister(uint16_t address) {
-    switch (address) {
+    switch (address - core_base) {
     case X_REG_ADDR:
         return core.x;
     case Y_REG_ADDR:
@@ -44,7 +43,7 @@ uint8_t readCoreRegister(uint16_t address) {
 }
 
 void writeCoreRegister(uint16_t address, uint8_t value) {
-    switch (address) {
+    switch (address - core_base) {
     case X_REG_ADDR:
         core.x = value;
         break;
@@ -179,13 +178,13 @@ core_func addressing_modes[16][16] = {
 
 
 
-CPU6502* allocCPU(struct Bus* bus, uint16_t stack_base_addr)
+CPU6502* allocCPU(struct Bus* bus, uint16_t core_base_addr)
 {
     CPU6502* cpu = malloc(sizeof(struct _CPU6502));
     if (cpu != NULL) {
-        cpu->stack_base = stack_base_addr;
+        core_base = core_base_addr;
         cpu->bus = bus;
-        struct Peripheral* p = addPeripheral(bus, X_REG_ADDR, A_REG_ADDR);
+        struct Peripheral* p = addPeripheral(bus, core_base_addr + X_REG_ADDR, core_base_addr + A_REG_ADDR);
         p->write = writeCoreRegister;
         p->read = readCoreRegister;
     }
@@ -229,14 +228,14 @@ void hardReset(CPU6502* cpu) {
 
 void push(CPU6502* cpu, uint8_t byte) {
     assert(core.sp > 0x00);
-    write(cpu->bus, cpu->stack_base + core.sp, byte);
+    write(cpu->bus, 0x800 + core.sp, byte);
     core.sp--;
 }
 
 uint8_t pop(CPU6502* cpu) {
     assert(core.sp < 0xFF);
     core.sp++;
-    return read(cpu->bus, cpu->stack_base + core.sp);
+    return read(cpu->bus, 0x800 + core.sp);
 }
 
 void ADC(CPU6502* cpu) {
@@ -393,12 +392,12 @@ void DEC(CPU6502* cpu) {
 }
 
 void DEX(CPU6502* cpu) {
-    cpu->data = read(cpu->bus, X_REG_ADDR);
+    cpu->data = read(cpu->bus, core_base + X_REG_ADDR);
     DEC(cpu);
 }
 
 void DEY(CPU6502* cpu) {
-    cpu->data = read(cpu->bus, Y_REG_ADDR);
+    cpu->data = read(cpu->bus, core_base + Y_REG_ADDR);
     DEC(cpu);
 }
 
@@ -565,12 +564,12 @@ void TSX(CPU6502* cpu) {
 }
 
 void INX(CPU6502* cpu) {
-    cpu->data = read(cpu->bus, X_REG_ADDR);
+    cpu->data = read(cpu->bus, core_base + X_REG_ADDR);
     INC(cpu);
 }
 
 void INY(CPU6502* cpu) {
-    cpu->data = read(cpu->bus, Y_REG_ADDR);
+    cpu->data = read(cpu->bus, core_base + Y_REG_ADDR);
     INC(cpu);
 }
 
@@ -697,5 +696,5 @@ void REL(CPU6502* cpu) {
 }
 
 void ACC(CPU6502* cpu) {
-    cpu->data = read(cpu->bus, A_REG_ADDR);
+    cpu->data = read(cpu->bus, core_base + A_REG_ADDR);
 }

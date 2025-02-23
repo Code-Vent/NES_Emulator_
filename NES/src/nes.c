@@ -3,11 +3,12 @@
 
 void setup(struct Nes* nes) {
     nes->main_bus = allocBus();
-    allocStack(nes->main_bus, 0x800, 256);
+    allocStack(nes->main_bus, 0x800, 256);//stack is from 0x800 to 0x8FF
+    nes->cpu = allocCPU(nes->main_bus, 0x800 + 256);//The core registers begin after stack at 0x900
+    nes->apu = allocAPU(nes->main_bus, 0x4000, 64);
     allocRam(nes->main_bus, 0, 0x2000);
     allocCartridge(nes->main_bus, 0x4020, 0xBFE0);
-    nes->cpu = allocCPU(nes->main_bus, 0x1000);
-    nes->apu = allocAPU(nes->main_bus, 0x4000, 64);
+    
 
     nes->graphics_bus = allocBus();
     allocVRam(nes->graphics_bus, 0, 0x4000);

@@ -30,9 +30,6 @@ int main(int argc, char* argv[]) {
     //initRaylib();
     struct Nes nes;
     setup(&nes);
-    write(nes.main_bus, 0x2000, 0x03);
-    struct PPUCTRLBits a;
-    getPPUControlSettings(&a);
     
     write(nes.main_bus, 0xfffc, 0x00);
     write(nes.main_bus, 0xfffd, 0x00);
@@ -47,6 +44,7 @@ int main(int argc, char* argv[]) {
 
     hardReset(nes.cpu);
     struct Registers r;
+    
     while (execute(nes.cpu) && !nes.main_bus->error) {
         getCPURegisters(&r);
         printf("\nPC = %x\n ", r.pc);

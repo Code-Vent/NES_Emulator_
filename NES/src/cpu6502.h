@@ -23,7 +23,7 @@ struct Registers
     uint8_t sr;
 };
 
-CPU6502* allocCPU(struct Bus*, uint16_t stack_base_addr);
+CPU6502* allocCPU(struct Bus*, uint16_t core_base_addr);
 void getCPURegisters(struct Registers*);
 void deallocCPU(CPU6502*);
 void hardReset(CPU6502* cpu);
