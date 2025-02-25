@@ -9,8 +9,10 @@
 #include<stdio.h>
 
 #define RAM_SIZE 2048
-#define VRAM_SIZE 0x4000
-#define CARTRIDGE_SIZE 0xBFE0
+#define CHR_RAM_SIZE 0x3F00
+#define PGR_ROM_SIZE 0xBFE0
+#define PPU_PALETTE_SIZE 0x20
+#define PPU_OAM_SIZE 0x100
 #define STACK_SIZE 256
 
 struct Ram {
@@ -18,19 +20,29 @@ struct Ram {
     uint8_t data[RAM_SIZE + STACK_SIZE];
 }ram;
 
-struct VRam {
+struct ChrRam {
     uint16_t start_address;
-    uint8_t data[VRAM_SIZE];
-}v_ram;
+    uint8_t data[CHR_RAM_SIZE];
+}chr_ram;
+
+struct PrgRom {
+    uint16_t start_address;
+    uint8_t data[PGR_ROM_SIZE];
+}prg_rom;
 
 struct Stack {
     uint16_t start_address;
 }stack;
 
-struct Cartridge {
+struct PPUPalette {
     uint16_t start_address;
-    uint8_t data[CARTRIDGE_SIZE];
-}cartridge;
+    uint8_t data[PPU_PALETTE_SIZE];
+}palette;
+
+struct PPUOAM {
+    uint16_t start_address;
+    uint8_t data[PPU_OAM_SIZE];
+}oam;
 
 
 
@@ -43,19 +55,34 @@ void writeRam(uint16_t address, uint8_t value) {
     ram.data[(address & 0x7FF) - ram.start_address] = value;
 }
 
-uint8_t readVRam(uint16_t address) {
-    return v_ram.data[address - v_ram.start_address];
+uint8_t readChrRam(uint16_t address) {
+    return chr_ram.data[address - chr_ram.start_address];
 }
 
-void writeVRam(uint16_t address, uint8_t value) {
-    v_ram.data[address - v_ram.start_address] = value;
+void writeChrRam(uint16_t address, uint8_t value) {
+    chr_ram.data[address - chr_ram.start_address] = value;
 }
 
-uint8_t readCartridge(uint16_t address) {
-    return cartridge.data[address - cartridge.start_address];
+uint8_t readPrgRom(uint16_t address) {
+    return prg_rom.data[address - prg_rom.start_address];
 }
-void writeCartridge(uint16_t address, uint8_t value) {
-    cartridge.data[address - cartridge.start_address] = value;
+
+void writePrgRom(uint16_t address, uint8_t value) {
+    prg_rom.data[address - prg_rom.start_address] = value;
+}
+
+uint8_t readPalette(uint16_t address) {
+    return palette.data[(address & 0x3FFF) - palette.start_address];
+}
+void writePalette(uint16_t address, uint8_t value) {
+    palette.data[(address & 0x3FFF) - palette.start_address] = value;
+}
+
+uint8_t readOAM(uint16_t address) {
+    return oam.data[address - oam.start_address];
+}
+void writeOAM(uint16_t address, uint8_t value) {
+    oam.data[address - oam.start_address] = value;
 }
 
 uint8_t readStack(uint16_t address) {
@@ -74,16 +101,24 @@ void allocRam(struct Bus* bus, uint16_t start_address, uint16_t size) {
     ram.start_address = start_address;
 }
 
-void allocVRam(struct Bus* bus, uint16_t start_address, uint16_t size) {
+void allocCHR_RAM(struct Bus* bus, uint16_t start_address, uint16_t size) {
     assert(bus != NULL);
     struct Peripheral* p = addPeripheral(bus, start_address, start_address + size - 1);
-    p->read = readVRam;
-    p->write = writeVRam;
-    v_ram.start_address = start_address;
+    p->read = readChrRam;
+    p->write = writeChrRam;
+    chr_ram.start_address = start_address;
     srand(time(0));
-    for (uint16_t i = 0; i < VRAM_SIZE; ++i) {
-        writeVRam(start_address + i, rand());
+    for (uint16_t i = 0; i < CHR_RAM_SIZE; ++i) {
+        writeChrRam(start_address + i, rand());
     }
+}
+
+void allocPGR_ROM(struct Bus* bus, uint16_t start_address, uint16_t size) {
+    assert(bus != NULL);
+    struct Peripheral* p = addPeripheral(bus, start_address, start_address + size - 1);
+    p->read = readPrgRom;
+    p->write = writePrgRom;
+    prg_rom.start_address = start_address;
 }
 
 void allocStack(struct Bus* bus, uint16_t start_address, uint16_t size) {
@@ -94,20 +129,18 @@ void allocStack(struct Bus* bus, uint16_t start_address, uint16_t size) {
     stack.start_address = start_address;
 }
 
-void allocCartridge(struct Bus* bus, uint16_t start_address, uint16_t size) {
+void allocPalette(struct Bus* bus, uint16_t start_address, uint16_t size) {
     assert(bus != NULL);
     struct Peripheral* p = addPeripheral(bus, start_address, start_address + size - 1);
-    p->read = readCartridge;
-    p->write = writeCartridge;
-    cartridge.start_address = start_address;
-    cartridge.data[0] = 0xCA;
+    p->read = readPalette;
+    p->write = writePalette;
+    palette.start_address = start_address;
 }
 
-uint8_t directReadCartridge(uint16_t address) {
-    assert(address < CARTRIDGE_SIZE);
-    return cartridge.data[address];
-}
-void directWriteCartridge(uint16_t address, uint8_t value) {
-    assert(address < CARTRIDGE_SIZE);
-    cartridge.data[address] = value;
+void allocOAM(struct Bus* bus, uint16_t start_address, uint16_t size) {
+    assert(bus != NULL);
+    struct Peripheral* p = addPeripheral(bus, start_address, start_address + size - 1);
+    p->read = readOAM;
+    p->write = writeOAM;
+    oam.start_address = start_address;
 }

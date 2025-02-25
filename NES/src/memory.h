@@ -8,10 +8,11 @@
 #define NES_MEMORY_H
 
 void allocRam(struct Bus* bus, uint16_t start_address, uint16_t size);
-void allocVRam(struct Bus* bus, uint16_t start_address, uint16_t size);
+void allocCHR_RAM(struct Bus* bus, uint16_t start_address, uint16_t size);
+void allocPGR_ROM(struct Bus* bus, uint16_t start_address, uint16_t size);
 void allocStack(struct Bus* bus, uint16_t start_address, uint16_t size);
-void allocCartridge(struct Bus* bus, uint16_t start_address, uint16_t size);
-uint8_t directReadCartridge(uint16_t address);
-void directWriteCartridge(uint16_t address, uint8_t value);
+void allocOAM(struct Bus* bus, uint16_t start_address, uint16_t size);
+void allocPalette(struct Bus* bus, uint16_t start_address, uint16_t size);
+
 
 #endif //NES_MEMORY_H

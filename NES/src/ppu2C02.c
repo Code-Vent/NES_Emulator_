@@ -4,9 +4,6 @@
 
 #include "ppu2C02.h"
 
-PPU2C02* g_ppu = NULL;
-struct Bus* g_main_bus = NULL;
-struct Bus* g_graphics_bus = NULL;
 
 #define PPUCTRL   0x2000
 #define PPUMASK   0x2001
@@ -18,20 +15,24 @@ struct Bus* g_graphics_bus = NULL;
 #define PPUDATA   0x2007
 #define OAMDMA    0x4014
 
+static struct PPURegisters core;
+static PPU2C02* g_ppu;
+
+uint16_t    core_base;
 struct _PPU2C02 {
-    union ControlSettings s_ctrl;
-    union RenderingSettings s_render;
+    struct Bus* graphics_bus;
+    struct Bus* ppu_bus;
 };
 
 uint8_t readPPURegisters(uint16_t address) {
     switch (address & 0x2007)
     {
     case PPUSTATUS:
-        break;
+        return core.ppustatus.byte;
     case PPUDATA:
-        break;
+        return read(g_ppu->graphics_bus, core.ppuaddr.word);
     case OAMDATA:
-        break;
+        return read(g_ppu->ppu_bus, core.oamaddr);
     default:
         break;
     }
@@ -39,41 +40,52 @@ uint8_t readPPURegisters(uint16_t address) {
 }
 
 void writePPURegisters(uint16_t address, uint8_t value) {
+    typedef struct  {
+        uint8_t w : 1;
+    }byte_tracker_t;
+    static byte_tracker_t bt = {
+        .w = 1
+    };
+
     switch (address & 0x2007)
     {
     case PPUCTRL:
-        g_ppu->s_ctrl.ppuctrl = value;
+        core.ppuctrl.byte = value;
         break;
     case PPUMASK:
-        g_ppu->s_render.ppumask = value;
+        core.ppumask.byte = value;
         break;
     case PPUSCROLL:
+        core.ppuscroll.bytes[bt.w++] = value;
         break;
     case PPUADDR:
+        core.ppuaddr.bytes[bt.w++] = value;
         break;
     case PPUDATA:
+        write(g_ppu->graphics_bus, core.ppuaddr.word, value);
         break;
     case OAMADDR:
+        core.oamaddr = value;
         break;
     case OAMDATA:
+        write(g_ppu->ppu_bus, core.oamaddr, value);
         break;
     default:
         break;
     }
 }
 
-PPU2C02* allocPPU(struct Bus* main_bus, struct Bus* g_bus, uint16_t start_address, uint16_t end_address) {
-    assert(main_bus != NULL && g_bus != NULL);
-    if (g_ppu == NULL) {
-        g_ppu = malloc(sizeof(struct _PPU2C02));
-        assert(g_ppu != NULL);
+PPU2C02* allocPPU(struct Bus* main_bus, uint16_t start_address, uint16_t end_address, struct Bus* ppu_bus, struct Bus* g_bus) {
+    assert(ppu_bus != NULL && g_bus != NULL);
+    PPU2C02* g_ppu = malloc(sizeof(struct _PPU2C02));
+    if (g_ppu != NULL) {
+        //core_base = core_base_addr;
+        g_ppu->graphics_bus = g_bus;
+        g_ppu->ppu_bus = ppu_bus;
+        struct Peripheral* p = addPeripheral(main_bus, start_address, end_address);
+        p->read = readPPURegisters;
+        p->write = writePPURegisters;
     }
-    struct Peripheral* p = addPeripheral(main_bus, start_address, end_address);
-    p->read = readPPURegisters;
-    p->write = writePPURegisters;
-    
-    g_main_bus = main_bus;
-    g_graphics_bus = g_bus;
     return g_ppu;
 }
 
@@ -82,14 +94,9 @@ void deallocPPU(PPU2C02* ppu)
     free(ppu);
 }
 
-void getPPUControlSettings(struct PPUCTRLBits* bits)
+void getPPURegisters(struct PPURegisters* r)
 {
-    *bits = g_ppu->s_ctrl.bits;
-}
-
-void getPPURenderingSettings(struct PPUMASKBits* bits)
-{
-    *bits = g_ppu->s_render.bits;
+    *r = core;
 }
 
 

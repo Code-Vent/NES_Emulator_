@@ -149,6 +149,7 @@
     <ClCompile Include="src\bus.c" />
     <ClCompile Include="src\cpu6502.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\mappers\mapper00.c" />
     <ClCompile Include="src\memory.c" />
     <ClCompile Include="src\nes.c" />
     <ClCompile Include="src\peripheral.c" />
@@ -158,6 +159,7 @@
     <ClInclude Include="src\apu2A03.h" />
     <ClInclude Include="src\bus.h" />
     <ClInclude Include="src\cpu6502.h" />
+    <ClInclude Include="src\mappers\mapper00.h" />
     <ClInclude Include="src\memory.h" />
     <ClInclude Include="src\nes.h" />
     <ClInclude Include="src\peripheral.h" />

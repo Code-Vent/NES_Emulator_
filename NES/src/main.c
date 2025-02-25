@@ -43,18 +43,31 @@ int main(int argc, char* argv[]) {
     write(nes.main_bus, 0x0007, 0x00);
 
     hardReset(nes.cpu);
-    struct Registers r;
-    
+    struct CPURegisters r;
     while (execute(nes.cpu) && !nes.main_bus->error) {
         getCPURegisters(&r);
         printf("\nPC = %x\n ", r.pc);
         printf("SP = %x\n ", r.sp);
         printf("A = %x\n ", r.a);
     }
-    
-    destroy(&nes);
+    /*
+    write(nes.main_bus, 0x2006, 0xef);//High byte of PPUADDR
+    write(nes.main_bus, 0x2006, 0xfe);//Low byte of PPUADDR
 
+    write(nes.main_bus, 0x2005, 0xef);//High byte of PPUSCROLL
+    write(nes.main_bus, 0x2005, 0xfe);//Low byte of PPUSCROLL
+
+    struct PPURegisters g;
+    getPPURegisters(&g);
     
+    //Printing CHR_RAM
+    for (uint16_t i = 0; i < 0x3F00; ++i) {
+        uint16_t address = i;
+        printf("%x ", read(nes.graphics_bus, address));
+    }
+    */   
+    
+    destroy(&nes);  
     
     return 0;
 }

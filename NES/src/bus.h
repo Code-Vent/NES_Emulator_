@@ -18,7 +18,8 @@ struct Bus {
 struct Bus* allocBus();
 void deallocBus(struct Bus* bus);
 struct Peripheral* addPeripheral(struct Bus* bus, uint16_t start_address, uint16_t end_address);
-bool write(struct Bus* bus, uint16_t address, uint8_t data);
+void write(struct Bus* bus, uint16_t address, uint8_t data);
 uint8_t read(struct Bus* bus, uint16_t address);
+struct Peripheral* findPeripheral(struct Bus* bus, uint16_t start_address);
 
 #endif //NES_BUS_H

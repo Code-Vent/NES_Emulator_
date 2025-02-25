@@ -19,7 +19,7 @@
 #define FLAG_NEGATIVE 0x80
 
 
-static struct Registers core;
+static struct CPURegisters core;
 uint16_t    core_base;
 struct _CPU6502 {
     struct Bus* bus;
@@ -196,7 +196,7 @@ void deallocCPU(CPU6502* cpu) {
     free(cpu);
 }
 
-void getCPURegisters(struct Registers* r) {
+void getCPURegisters(struct CPURegisters* r) {
     assert(r != NULL);
     *r = core;
 }

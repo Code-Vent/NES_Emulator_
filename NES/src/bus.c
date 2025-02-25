@@ -33,27 +33,31 @@ struct Peripheral* addPeripheral(struct Bus* bus, uint16_t start_address, uint16
     bus->error = true;
     return NULL;
 }
-bool write(struct Bus* bus, uint16_t address, uint8_t data) {
+
+void write(struct Bus* bus, uint16_t address, uint8_t data) {
     bus->last_address = address;
-    for (int i = 0; i < MAX_PERIPHERALS; ++i) {
-        if (containsAddress(bus->peripherals[i], address)) {
-            if (bus->peripherals[i]->write != NULL)
-                bus->peripherals[i]->write(address, data);
-            return true;
-        }
-    }
-    bus->error = true;
-    return false;
+    struct Peripheral* p = findPeripheral(bus, address);
+    if (p && p->write != NULL)
+        p->write(address, data);
+    else
+        bus->error = true;
 }
 
 uint8_t read(struct Bus* bus, uint16_t address) {
     bus->last_address = address;
-    for (int i = 0; i < MAX_PERIPHERALS; ++i) {
-        if (containsAddress(bus->peripherals[i], address)) {
-            if (bus->peripherals[i]->read != NULL)
-                return bus->peripherals[i]->read(address);
-        }
-    }
+    struct Peripheral* p = findPeripheral(bus, address);
+    if (p && p->read != NULL)
+        return p->read(address);
     bus->error = true;
     return 0;
+}
+
+struct Peripheral* findPeripheral(struct Bus* bus, uint16_t address)
+{
+    for (int i = 0; i < MAX_PERIPHERALS; ++i) {
+        if (containsAddress(bus->peripherals[i], address)) {
+            return bus->peripherals[i];
+        }
+    }
+    return NULL;
 }

@@ -14,7 +14,7 @@
 
 typedef struct _CPU6502 CPU6502;
 
-struct Registers
+struct CPURegisters
 {
     uint16_t pc;
     uint8_t a;
@@ -24,7 +24,7 @@ struct Registers
 };
 
 CPU6502* allocCPU(struct Bus*, uint16_t core_base_addr);
-void getCPURegisters(struct Registers*);
+void getCPURegisters(struct CPURegisters*);
 void deallocCPU(CPU6502*);
 void hardReset(CPU6502* cpu);
 bool execute(CPU6502* cpu);

@@ -11,9 +11,10 @@
 struct Nes {
     CPU6502* cpu;
     APU2A03* apu;
+    PPU2C02* ppu;
     struct Bus* main_bus;
     struct Bus* graphics_bus;
-    PPU2C02* ppu;
+    struct Bus* ppu_bus;    
 };
 
 void setup(struct Nes* nes);
